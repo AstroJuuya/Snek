@@ -26,6 +26,7 @@
 #include "Board.h"
 #include "Snake.h"
 #include "Goal.h"
+#include "Menu.h"
 #include <random>
 
 class Game
@@ -46,6 +47,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	Menu menu;
 	Board brd;
 	Snake snek;
 	Location delta_loc = { 1,0 };

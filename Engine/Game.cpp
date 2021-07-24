@@ -20,16 +20,16 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include "SpriteCodex.h"
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
+	menu( gfx ),
 	brd( gfx ),
 	rng(std::random_device()()),
-	snek({2,2}),
-	goal(rng,brd,snek)
+	snek( {2,2} ),
+	goal( rng, brd, snek )
 {
 }
 
@@ -43,7 +43,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if (!gameIsOver)
+	if (!gameIsOver && !menu.IsOpen)
 	{
 		if (wnd.kbd.KeyIsPressed(VK_UP))
 		{
@@ -61,29 +61,41 @@ void Game::UpdateModel()
 		{
 			delta_loc = { 1, 0 };
 		}
-	}
-
-	snekMoveCounter++;
-	if (snekMoveCounter >= snekMovePeriod)
-	{
-		snekMoveCounter = 0;
-		const Location next = snek.GetNextHeadLocation(delta_loc);
-		if (!brd.IsInsideBoard(next) ||
-			snek.IsInTileExceptEnd(next))
+		else if (wnd.kbd.KeyIsPressed(VK_ESCAPE))
 		{
-			gameIsOver = true;
+			menu.IsOpen = true;
 		}
-		else
+	}
+	else if (menu.IsOpen)
+		if (wnd.kbd.KeyIsPressed(VK_RETURN))
 		{
-			const bool eating = next == goal.GetLocation();
-			if (eating)
+			menu.IsOpen = false;
+		}
+
+	if (!menu.IsOpen)
+	{
+		snekMoveCounter++;
+		if (snekMoveCounter >= snekMovePeriod)
+		{
+			snekMoveCounter = 0;
+			const Location next = snek.GetNextHeadLocation(delta_loc);
+			if (!brd.IsInsideBoard(next) ||
+				snek.IsInTileExceptEnd(next))
 			{
-				snek.Grow();
+				gameIsOver = true;
 			}
-			snek.MoveBy(delta_loc);
-			if (eating)
+			else
 			{
-				goal.Respawn(rng, brd, snek);
+				const bool eating = next == goal.GetLocation();
+				if (eating)
+				{
+					snek.Grow();
+				}
+				snek.MoveBy(delta_loc);
+				if (eating)
+				{
+					goal.Respawn(rng, brd, snek);
+				}
 			}
 		}
 	}
@@ -91,12 +103,18 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	brd.DrawBorder(Colors::Gray);
-	snek.Draw(brd);
-	goal.Draw(brd);
-	if (gameIsOver)
+	if (!menu.IsOpen)
 	{
-		SpriteCodex::DrawGameOver(gfx.ScreenWidth / 2 - 42, gfx.ScreenHeight / 2 - 32, gfx);
+		brd.DrawBorder(Colors::Gray);
+		snek.Draw(brd);
+		goal.Draw(brd);
+		if (gameIsOver)
+		{
+			menu.DrawGameover();
+		}
 	}
-	// SpriteCodex::DrawTitle(gfx.ScreenWidth - 107, gfx.ScreenHeight - 80, gfx);
+	else if (menu.IsOpen)
+	{
+		menu.DrawMenu();
+	}
 }
