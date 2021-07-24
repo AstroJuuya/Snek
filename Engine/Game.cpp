@@ -68,7 +68,7 @@ void Game::UpdateModel()
 	{
 		snekMoveCounter = 0;
 		const Location next = snek.GetNextHeadLocation(delta_loc);
-		if (!brd.IsInsideBoard(next) || 
+		if (!brd.IsInsideBoard(next) ||
 			snek.IsInTileExceptEnd(next))
 		{
 			gameIsOver = true;
@@ -91,10 +91,12 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+	brd.DrawBorder(Colors::Gray);
 	snek.Draw(brd);
 	goal.Draw(brd);
 	if (gameIsOver)
 	{
-		SpriteCodex::DrawGameOver(200, 200, gfx);
+		SpriteCodex::DrawGameOver(gfx.ScreenWidth / 2 - 42, gfx.ScreenHeight / 2 - 32, gfx);
 	}
+	// SpriteCodex::DrawTitle(gfx.ScreenWidth - 107, gfx.ScreenHeight - 80, gfx);
 }
