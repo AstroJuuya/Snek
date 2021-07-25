@@ -43,6 +43,9 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = ft.Mark();
+	snekMoveCounter += dt;
+
 	if (!gameIsOver && !menu.IsOpen)
 	{
 		if (wnd.kbd.KeyIsPressed(VK_UP))
@@ -74,8 +77,7 @@ void Game::UpdateModel()
 
 	if (!menu.IsOpen)
 	{
-		snekMoveCounter++;
-		if (snekMoveCounter >= snekMovePeriod - eatenCounter)
+		if (snekMoveCounter >= snekMovePeriod - float(snekMoveSpeed) / 100.0f)
 		{
 			snekMoveCounter = 0;
 			const Location next = snek.GetNextHeadLocation(delta_loc);
@@ -90,7 +92,7 @@ void Game::UpdateModel()
 				if (eating)
 				{
 					snek.Grow();
-					eatenCounter++;
+					snekMoveSpeed++;
 				}
 				snek.MoveBy(delta_loc);
 				if (eating)

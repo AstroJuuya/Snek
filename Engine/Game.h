@@ -27,6 +27,7 @@
 #include "Snake.h"
 #include "Goal.h"
 #include "Menu.h"
+#include "FrameTimer.h"
 #include <random>
 
 class Game
@@ -53,9 +54,10 @@ private:
 	Location delta_loc = { 1,0 };
 	std::mt19937 rng;
 	Goal goal;
-	static constexpr int snekMovePeriod = 144/3;
-	int snekMoveCounter = 0;
-	int eatenCounter = 0;
+	FrameTimer ft;
+	const float snekMovePeriod = 0.40f;
+	float snekMoveCounter = 0;
+	int snekMoveSpeed = 0;
 	bool gameIsOver = false;
 	/********************************/
 };
