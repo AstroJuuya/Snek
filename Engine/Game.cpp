@@ -75,7 +75,7 @@ void Game::UpdateModel()
 	if (!menu.IsOpen)
 	{
 		snekMoveCounter++;
-		if (snekMoveCounter >= snekMovePeriod)
+		if (snekMoveCounter >= snekMovePeriod - eatenCounter)
 		{
 			snekMoveCounter = 0;
 			const Location next = snek.GetNextHeadLocation(delta_loc);
@@ -90,6 +90,7 @@ void Game::UpdateModel()
 				if (eating)
 				{
 					snek.Grow();
+					eatenCounter++;
 				}
 				snek.MoveBy(delta_loc);
 				if (eating)

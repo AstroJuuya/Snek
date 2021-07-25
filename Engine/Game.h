@@ -55,6 +55,7 @@ private:
 	Goal goal;
 	static constexpr int snekMovePeriod = 144/3;
 	int snekMoveCounter = 0;
+	int eatenCounter = 0;
 	bool gameIsOver = false;
 	/********************************/
 };
